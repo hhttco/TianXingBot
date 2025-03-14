@@ -11,6 +11,7 @@ class TelegramController extends Controller
 {
     protected $msg;
     protected $telegramService;
+    protected $thisBotId;
 
     public function __construct(Request $request)
     {
@@ -19,11 +20,13 @@ class TelegramController extends Controller
         }
 
         $this->telegramService = new TelegramService();
+        $this->thisBotId = '7309768988';
     }
 
     public function webhook(Request $request)
     {
         $this->formatMessage($request->input());
+        $this->newJoinMember($request->input());
         $this->handle();
         return;
     }
@@ -133,5 +136,28 @@ class TelegramController extends Controller
         } catch (\Exception $e) {
             $this->telegramService->sendMessage($msg->chat_id, $e->getMessage());
         }
+    }
+
+    public function newJoinMember(array $data)
+    {
+        // 如果不是新加入
+        if (!isset($data['message']['new_chat_participant'])) return;
+
+        $chatId = $data['message']['chat']['id'];
+        $newMemberId = $data['message']['new_chat_participant']['id'];
+
+        // 获取用户姓名
+        $userName = $data['message']['new_chat_participant']['first_name'];
+        if (isset($data['message']['new_chat_participant']['last_name'])) {
+            $userName = $userName . " " . $data['message']['new_chat_participant']['last_name'];
+        }
+
+        if ($newMemberId == $this->thisBotId) {
+            $retText = "[$userName](tg://user?id=$newMemberId) 请将本机器人设置为管理员";
+        } else {
+            $retText = "欢迎新用户 [$userName](tg://user?id=$newMemberId)";
+        }
+
+        $this->telegramService->sendMessage($chatId, $retText, 'markdown');
     }
 }
