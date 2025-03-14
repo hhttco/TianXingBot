@@ -3,6 +3,7 @@
 namespace App\Plugins\Telegram\Commands;
 
 use App\Plugins\Telegram\Telegram;
+use App\Models\Users;
 
 class GetMe extends Telegram {
     public $command = '/getme';
