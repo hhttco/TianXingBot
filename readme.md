@@ -18,7 +18,7 @@ php7.3-xml php7.3-xmlrpc php7.3-zip php7.3-intl \
 php7.3-bz2 php7.3-bcmath php-redis php7.3-fileinfo php-gmp
 ```
 
-如果系统没有php包 运行以下命令安装 在设置默认版本
+如果系统没有php包 运行以下命令安装 然后运行安装PHP 安装完成后会出现多个版本需要设置默认版本
 ```
 apt -y install apt-transport-https lsb-release ca-certificates curl wget && wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg && sh -c 'echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list' && apt update
 ```
