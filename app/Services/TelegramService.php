@@ -72,6 +72,26 @@ class TelegramService {
         ]);
     }
 
+    // 封禁成员
+    public function banChatMember(int $chatId, int $userId, int $untilDate = 1)
+    {
+        $this->request('banChatMember', [
+            'chat_id'          => $chatId,
+            'user_id'          => $userId,
+            'until_date'       => $untilDate, // 366 天或从当前时间算起不到 30 秒，则视为永久禁言
+            'revoke_messages'  => true
+        ]);
+    }
+
+    // 解禁成员
+    public function unbanChatMember(int $chatId, int $userId)
+    {
+        $this->request('unbanChatMember', [
+            'chat_id'  => $chatId,
+            'user_id'  => $userId
+        ]);
+    }
+
     private function request(string $method, array $params = [])
     {
         $curl = new Curl();
