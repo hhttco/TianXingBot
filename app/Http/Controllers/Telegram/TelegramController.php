@@ -122,16 +122,24 @@ class TelegramController extends Controller
         }
 
         try {
-            if ($msg->message_type === 'message') {
-                // $this->fromSend();
-                // 一定要双引号
-                $retText = "[$msg->user_name](tg://user?id=$msg->user_id)\n" . $msg->text;
+            foreach (glob(base_path('app//Plugins//Telegram//Commands') . '/*.php') as $file) {
+                $command = basename($file, '.php');
+                $class = '\\App\\Plugins\\Telegram\\Commands\\' . $command;
+                if (!class_exists($class)) continue;
+                $instance = new $class();
+                if ($msg->message_type === 'message') {
+                    if (!isset($instance->command)) continue;
+                    if ($msg->command !== $instance->command) continue;
+                    $instance->handle($msg);
+                    return;
+                }
 
-                $this->telegramService->sendMessage($msg->chat_id, $retText, 'markdown');
-            }
-
-            if ($msg->message_type === 'reply_message') {
-                $this->telegramService->sendMessage($msg->chat_id, $msg->text);
+                if ($msg->message_type === 'reply_message') {
+                    if (!isset($instance->regex)) continue;
+                    if (!preg_match($instance->regex, $msg->reply_text, $match)) continue;
+                    $instance->handle($msg, $match);
+                    return;
+                }
             }
         } catch (\Exception $e) {
             $this->telegramService->sendMessage($msg->chat_id, $e->getMessage());
