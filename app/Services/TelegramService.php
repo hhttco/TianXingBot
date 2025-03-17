@@ -93,7 +93,7 @@ class TelegramService {
     }
 
     // 限制成员聊天
-    public function restrictChatMember(int $chatId, int $userId, int $untilDate = 1)
+    public function restrictChatMember(int $chatId, int $userId, int $untilDate = 1, bool $permission)
     {
         $this->request('restrictChatMember', [
             'chat_id'  => $chatId,
@@ -101,7 +101,7 @@ class TelegramService {
             // 'permissions' => [ // 使用这个每个权限都要单独设置
             //     'can_send_messages' => false // 可以发送消息
             // ],
-            'use_independent_chat_permissions' => false,
+            'use_independent_chat_permissions' => $permission,
             'until_date'  => $untilDate
         ]);
     }
