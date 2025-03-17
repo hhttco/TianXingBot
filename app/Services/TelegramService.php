@@ -101,6 +101,11 @@ class TelegramService {
 
         if (!isset($response->ok)) abort(500, '请求失败');
         if (!$response->ok) {
+            // 判断是否是权限不足
+            if (isset($params['chat_id']) && strpos($response->description, 'not enough rights') !== false) {
+                $this->sendMessage($params['chat_id'], '天星机器人权限不足！请将机器人设置为群管理员', 'markdown');
+            }
+
             abort(500, '来自TG的错误：' . $response->description);
         }
 
