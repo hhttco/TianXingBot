@@ -3,7 +3,6 @@
 namespace App\Plugins\Telegram;
 
 use App\Services\TelegramService;
-use App\Models\TgGroup;
 
 class Common {
     protected $telegramService;
@@ -43,9 +42,17 @@ class Common {
     }
 
     public function power($chatId, $userId) {
-        // 判断群组
-        $group = TgGroup::where('group_id', $chatId)->first();
-        if ($group && $group->create_user_id != $userId) {
+        // 判断群组权限
+        $isAdmin = 0;
+        $adminList = $this->telegramService->getChatAdministrators($chatId);
+        foreach ($adminList->result as $key => $value) {
+            if ($value->user->id == $userId) {
+                $isAdmin = 1;
+                break;
+            }
+        }
+
+        if (!$isAdmin) {
             abort(500, '请联系管理员操作');
         }
     }
