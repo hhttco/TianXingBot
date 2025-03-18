@@ -4,6 +4,8 @@ namespace App\Plugins\Telegram\Commands;
 
 use App\Services\TelegramService;
 use App\Models\TgGroup;
+use App\Models\TgGroupConfig;
+use App\Plugins\Telegram\Common;
 
 class NewJoinMember {
     protected $telegramService;
@@ -40,7 +42,15 @@ class NewJoinMember {
             // 如果是被邀请进入判断数据库是否存在
             $this->group($data);
         } else {
-            $retText = "欢迎新用户 [$userName](tg://user?id=$newMemberId)";
+            // 判断是否有配置
+            $groupConfig = TgGroupConfig::where('group_id', $chatId)->first();
+            if ($groupConfig && $groupConfig->group_welcome_state == 1) {
+                $common = new Common();
+                $common->welcome($groupConfig->group_welcome, $userName, $chatId);
+                return;
+            } else {
+                $retText = "欢迎新用户 [$userName](tg://user?id=$newMemberId)";
+            }
         }
 
         $this->telegramService->sendMessage($chatId, $retText, 'markdown');
