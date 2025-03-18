@@ -106,6 +106,14 @@ class TelegramService {
         ]);
     }
 
+    // 获取聊天群组人数
+    public function getChatMemberCount(int $chatId)
+    {
+        return $this->request('getChatMemberCount', [
+            'chat_id'  => $chatId
+        ]);
+    }
+
     private function request(string $method, array $params = [])
     {
         $curl = new Curl();
