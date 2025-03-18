@@ -114,6 +114,14 @@ class TelegramService {
         ]);
     }
 
+    // 获取聊天管理员
+    public function getChatAdministrators(int $chatId)
+    {
+        return $this->request('getChatAdministrators', [
+            'chat_id'  => $chatId
+        ]);
+    }
+
     private function request(string $method, array $params = [])
     {
         $curl = new Curl();
