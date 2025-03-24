@@ -10,6 +10,11 @@ class Welcome extends Telegram {
     public $description = '设置欢迎词';
 
     public function handle($message, $match = []) {
+        if ($message->is_private) {
+            $this->telegramService->sendMessage($message->chat_id, "请在群聊中设置", 'markdown');
+            return;
+        };
+
         $this->common->power($message->chat_id, $message->user_id); // 权限验证
 
         if (!isset($message->args[0])) {
