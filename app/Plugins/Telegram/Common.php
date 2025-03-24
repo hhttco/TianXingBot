@@ -56,4 +56,15 @@ class Common {
             abort(500, '请联系管理员操作');
         }
     }
+
+    public function help($chatId) {
+        $help = [
+            '/help - 获取帮助信息',
+            '/getme - 获取自己的信息',
+            '/welcome - 设置欢迎词 (欢迎 {$username} 加入本群||按钮1&&地址||按钮2&&地址)',
+        ];
+
+        $text = implode(PHP_EOL, $help);
+        $this->telegramService->sendMessage($chatId, $text, 'markdown');
+    }
 }
