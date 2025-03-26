@@ -121,6 +121,15 @@ class TelegramController extends Controller
             }
         }
 
+        // 判断是否是入群验证
+        $checkAns = explode('-', $msg->command);
+        if (count($checkAns) == 2) {
+            if ($checkAns[0] === '/ckans'){
+                $msg->command = $checkAns[0];
+                $msg->check_answer = $checkAns[1];
+            }
+        }
+
         try {
             foreach (glob(base_path('app//Plugins//Telegram//Commands') . '/*.php') as $file) {
                 $command = basename($file, '.php');
@@ -146,9 +155,15 @@ class TelegramController extends Controller
         }
     }
 
+    public function getBotName()
+    {
+        $response = $this->telegramService->getMe();
+        return $response->result->username;
+    }
+
     public function newJoinMember(array $data)
     {
-        $class = '\\App\\Plugins\\Telegram\\Commands\\NewJoinMember';
+        $class = '\\App\\Plugins\\Telegram\\NewJoinMember';
         if (!class_exists($class)) return;
         $instance = new $class();
 
