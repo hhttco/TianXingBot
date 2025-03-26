@@ -52,9 +52,7 @@ class Common {
             }
         }
 
-        if (!$isAdmin) {
-            abort(500, '请联系管理员操作');
-        }
+        return $isAdmin;
     }
 
     public function help($chatId) {
@@ -66,5 +64,26 @@ class Common {
 
         $text = implode(PHP_EOL, $help);
         $this->telegramService->sendMessage($chatId, $text, 'markdown');
+    }
+
+    // 发送入群验证
+    public function checkJoin($chatId, $userId, $userName) {
+        // 限制聊天 回答正确后解除限制
+        $this->telegramService->restrictChatMember($chatId, $userId, time() + 90, false);
+
+        $ques = $userName . " 你好呀！请回答一个问题，7+3等于多少？请在90秒内回答，否则会被我踢出群。";
+
+        $replyMarkup = json_encode([
+            'inline_keyboard' => [
+                [
+                    ['text' => "8", 'callback_data' => '/ckans-8'],
+                    ['text' => "9", 'callback_data' => '/ckans-9'],
+                    ['text' => "10", 'callback_data' => '/ckans-10'],
+                    ['text' => "14", 'callback_data' => '/ckans-14']
+                ]
+            ]
+        ]);
+
+        $this->telegramService->sendMessageMarkup($chatId, $ques, $replyMarkup, 'markdown');
     }
 }
