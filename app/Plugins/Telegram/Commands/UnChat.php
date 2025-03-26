@@ -10,7 +10,7 @@ class UnChat extends Telegram {
 
     public function handle($message, $match = []) {
         $telegramService = $this->telegramService;
-        $r = $telegramService->restrictChatMember(-1002594852610, 2138900929, 1, true);
+        $r = $telegramService->restrictChatMember(0, 0, 1, true);
         $telegramService->sendMessage($message->chat_id, json_encode($r), 'markdown');
     }
 }
