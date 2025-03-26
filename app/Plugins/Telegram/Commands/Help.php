@@ -9,7 +9,7 @@ class Help extends Telegram {
     public $description = '获取帮助信息';
 
     public function handle($message, $match = []) {
-        if (!$message->is_private) return;
+        // if (!$message->is_private) return;
 
         $this->common->help($message->chat_id);
     }
