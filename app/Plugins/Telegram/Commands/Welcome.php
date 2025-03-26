@@ -15,7 +15,10 @@ class Welcome extends Telegram {
             return;
         };
 
-        $this->common->power($message->chat_id, $message->user_id); // 权限验证
+        // 权限验证
+        if (!$this->common->power($message->chat_id, $message->user_id)) {
+            abort(500, '请联系管理员操作');
+        }
 
         if (!isset($message->args[0])) {
             // abort(500, '参数有误');
