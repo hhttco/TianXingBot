@@ -95,13 +95,27 @@ class TelegramService {
     // 限制成员聊天
     public function restrictChatMember(int $chatId, int $userId, int $untilDate = 1, bool $permission)
     {
+        $p = [
+            'can_send_messages'         => $permission, // 可以发送消息
+            'can_send_audios'           => $permission,
+            'can_send_documents'        => $permission,
+            'can_send_photos'           => $permission,
+            'can_send_videos'           => $permission,
+            'can_send_video_notes'      => $permission,
+            'can_send_voice_notes'      => $permission,
+            'can_send_polls'            => $permission,
+            'can_send_other_messages'   => $permission,
+            'can_add_web_page_previews' => $permission,
+            'can_change_info'           => $permission,
+            'can_invite_users'          => $permission,
+            'can_pin_messages'          => $permission,
+            'can_manage_topics'         => $permission
+        ];
+
         $this->request('restrictChatMember', [
-            'chat_id'  => $chatId,
-            'user_id'  => $userId,
-            // 'permissions' => [ // 使用这个每个权限都要单独设置
-            //     'can_send_messages' => false // 可以发送消息
-            // ],
-            'use_independent_chat_permissions' => $permission,
+            'chat_id'     => $chatId,
+            'user_id'     => $userId,
+            'permissions' => json_encode($p),
             'until_date'  => $untilDate
         ]);
     }
