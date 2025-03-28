@@ -6,7 +6,7 @@ use App\Plugins\Telegram\Telegram;
 
 class ConfigJoinCheck extends Telegram {
     public $command = '/configjoincheck';
-    public $description = '关闭入群验证';
+    public $description = '配置入群验证开关';
 
     public function handle($message, $match = []) {
         if ($message->is_private) {
