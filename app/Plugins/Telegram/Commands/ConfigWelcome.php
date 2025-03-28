@@ -6,7 +6,7 @@ use App\Plugins\Telegram\Telegram;
 
 class ConfigWelcome extends Telegram {
     public $command = '/configwelcome';
-    public $description = '关闭欢迎语';
+    public $description = '配置欢迎语开关';
 
     public function handle($message, $match = []) {
         if ($message->is_private) {
