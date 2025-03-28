@@ -11,8 +11,7 @@ class Welcome extends Telegram {
 
     public function handle($message, $match = []) {
         if ($message->is_private) {
-            $this->telegramService->sendMessage($message->chat_id, "请在群聊中设置", 'markdown');
-            return;
+            abort(500, '请在群聊中设置');
         };
 
         // 权限验证
@@ -21,17 +20,7 @@ class Welcome extends Telegram {
         }
 
         if (!isset($message->args[0])) {
-            // abort(500, '参数有误');
-            // 没有参数则为关闭
-            $groupConfig = TgGroupConfig::where('group_id', $message->chat_id)->first();
-            if ($groupConfig) {
-                $groupConfig->group_welcome_state = 0;
-                $groupConfig->save();
-            }
-
-            $telegramService = $this->telegramService;
-            $telegramService->sendMessage($message->chat_id, "欢迎词已关闭", 'markdown');
-            return;
+            abort(500, '参数有误！如需要关闭欢迎词请前往配置项配置');
         }
 
         // 例子：欢迎 {$username} 加入本群||按钮1&&地址||按钮2&&地址
@@ -48,8 +37,7 @@ class Welcome extends Telegram {
         // 保存到数据库
         $groupConfig = TgGroupConfig::where('group_id', $message->chat_id)->first();
         if (!$groupConfig) {
-            $groupConfig = new TgGroupConfig;
-            $groupConfig->group_id = $message->chat_id;
+            abort(500, '请重新邀请本机器人入群');
         }
 
         $groupConfig->group_welcome = $str;
