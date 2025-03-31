@@ -25,7 +25,7 @@ class TelegramService {
 
     public function sendMessage(int $chatId, string $text, string $parseMode = '', int $replyToMessageId = NULL)
     {
-        $this->request('sendMessage', [
+        return $this->request('sendMessage', [
             'chat_id'             => $chatId,
             'text'                => $text,
             'parse_mode'          => $parseMode,
@@ -36,7 +36,7 @@ class TelegramService {
     public function sendMessageMarkup(int $chatId, string $text, string $reply_markup, string $parseMode = '')
     {
         // 可支持 markdown 语法
-        $this->request('sendMessage', [
+        return $this->request('sendMessage', [
             'chat_id'      => $chatId,
             'text'         => $text,
             'reply_markup' => $reply_markup,
