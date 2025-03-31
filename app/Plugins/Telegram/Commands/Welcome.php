@@ -45,6 +45,6 @@ class Welcome extends Telegram {
         $groupConfig->save();
 
         // 测试返回
-        $this->common->welcome($str, $message->user_name, $message->chat_id);
+        $this->common->welcome($message->chat_id, $message->user_id, $message->user_name);
     }
 }
