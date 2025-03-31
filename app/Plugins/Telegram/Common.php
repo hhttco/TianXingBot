@@ -5,6 +5,7 @@ namespace App\Plugins\Telegram;
 use App\Services\TelegramService;
 use Illuminate\Support\Facades\Redis;
 use App\Models\TgGroupConfig;
+use App\Jobs\TelegramDeleteMessage;
 
 class Common {
     protected $telegramService;
@@ -17,29 +18,53 @@ class Common {
         $this->thisBotId = explode(':', config('telegram.bot.token'))[0];
     }
 
-    public function welcome($chatId, $userId, $userName, $str) {
-        // 替换名称 单引号 不支持变量解析 双引号支持变量解析
-        $str = str_replace('{$username}', "[$userName](tg://user?id=$userId)", $str);
+    public function welcome($chatId, $userId, $userName) {
+        $groupConfig = TgGroupConfig::where('group_id', $chatId)->first();
+        if (!$groupConfig) {
+            abort(500, '请重新邀请本机器人入群');
+        }
 
-        // 设置按钮 explode
-        $arr = explode('||', $str);
-        if (count($arr) > 1) {
-            // 有按钮
-            $replyMarkupItem = array();
-            foreach ($arr as $key => $value) {
-                if ($key == 0) continue;
-                $bArr = explode('&&', $value);
-                $replyMarkupItem[] = ['text' => $bArr[0], 'callback_data' => $bArr[1]];
-            }
-
-            $replyMarkup = json_encode([
-                'inline_keyboard' => [$replyMarkupItem]
-            ]);
-
-            $this->telegramService->sendMessageMarkup($chatId, $arr[0], $replyMarkup, 'markdown');
+        if ($groupConfig->group_welcome_state != 1 || !$groupConfig->group_welcome) {
+            $retText = "欢迎新用户 [$userName](tg://user?id=$userId)";
+            $response = $this->telegramService->sendMessage($chatId, $retText, 'markdown');
         } else {
-            // 没有按钮
-            $this->telegramService->sendMessage($chatId, $str, 'markdown');
+            // 替换名称 单引号 不支持变量解析 双引号支持变量解析
+            $str = str_replace('{$username}', "[$userName](tg://user?id=$userId)", $groupConfig->group_welcome);
+
+            // 设置按钮 explode
+            $arr = explode('||', $str);
+            if (count($arr) > 1) {
+                // 有按钮
+                $replyMarkupItem = array();
+                foreach ($arr as $key => $value) {
+                    if ($key == 0) continue;
+                    $bArr = explode('&&', $value);
+                    $replyMarkupItem[] = ['text' => $bArr[0], 'callback_data' => $bArr[1]];
+                }
+
+                $replyMarkup = json_encode([
+                    'inline_keyboard' => [$replyMarkupItem]
+                ]);
+
+                $response = $this->telegramService->sendMessageMarkup($chatId, $arr[0], $replyMarkup, 'markdown');
+            } else {
+                // 没有按钮
+                $response = $this->telegramService->sendMessage($chatId, $str, 'markdown');
+            }
+        }
+
+        if ($response->result->message_id) {
+            $responseMessageId = $response->result->message_id;
+
+            // 放入延迟消息队列中
+            // TelegramDeleteMessage::dispatch([
+            //     'id'  => '123666666',
+            //     'id2' => 'rfd9999'
+            // ])->delay(now()->addMinutes(1));
+            TelegramDeleteMessage::dispatch([
+                'chat_id'    => $chatId,
+                'message_id' => $response->result->message_id
+            ]);
         }
     }
 
