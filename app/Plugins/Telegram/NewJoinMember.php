@@ -57,13 +57,7 @@ class NewJoinMember {
             }
 
             // 开启了欢迎词并且存在欢迎词
-            if ($groupConfig->group_welcome_state == 1 && $groupConfig->group_welcome) {
-                $this->common->welcome($chatId, $newMemberId, $userName, $groupConfig->group_welcome);
-                return;
-            }
-
-            $retText = "欢迎新用户 [$userName](tg://user?id=$newMemberId)";
-            $this->telegramService->sendMessage($chatId, $retText, 'markdown');
+            $this->common->welcome($chatId, $newMemberId, $userName);
         }
     }
 
