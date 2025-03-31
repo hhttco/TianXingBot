@@ -26,16 +26,7 @@ class Ckans extends Telegram {
             $this->telegramService->deleteMessage($message->chat_id, $message->message_id);
 
             // 发送欢迎词
-            $groupConfig = TgGroupConfig::where('group_id', $message->chat_id)->first();
-            if ($groupConfig) {
-                if ($groupConfig->group_welcome_state == 1 && $groupConfig->group_welcome) {
-                    $this->common->welcome($message->chat_id, $message->user_id, $message->user_name, $groupConfig->group_welcome);
-                    return;
-                }
-
-                $retText = "欢迎新用户 [$message->user_name](tg://user?id=$message->user_id)";
-                $this->telegramService->sendMessage($message->chat_id, $retText, 'markdown');
-            }
+            $this->common->welcome($message->chat_id, $message->user_id, $message->user_name);
         } else {
             // 回答错误
 
