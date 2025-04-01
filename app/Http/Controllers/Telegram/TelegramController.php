@@ -27,6 +27,7 @@ class TelegramController extends Controller
     {
         $this->formatMessage($request->input());
         $this->newJoinMember($request->input());
+        $this->keywordCheck($request->input());
         $this->handle();
         return;
     }
@@ -168,5 +169,56 @@ class TelegramController extends Controller
         $instance = new $class();
 
         $instance->handle($data);
+    }
+
+    public function keywordCheck(array $data)
+    {
+        if (!$this->checkIsCommand($data['message']['text'])) {
+            $class = '\\App\\Plugins\\Telegram\\KeywordCheck';
+            if (!class_exists($class)) return;
+            $instance = new $class();
+
+            $instance->handle($data);
+        }
+    }
+
+    public function checkIsCommand($text)
+    {
+        // 判断是不是命令
+        $text = explode(' ', $text);
+        $command = $text[0];
+        $commandName = explode('@', $text[0]);
+
+        // To reduce request, only commands contains @ will get the bot name
+        if (count($commandName) == 2) {
+            $botName = $this->getBotName();
+            if ($commandName[1] === $botName){
+                $command = $commandName[0];
+            }
+        }
+
+        // 判断是否是入群验证
+        $checkAns = explode('-', $command);
+        if (count($checkAns) == 2) {
+            if ($checkAns[0] === '/ckans'){
+                $command = $checkAns[0];
+            }
+        }
+
+        $isCommand = false;
+        if ($command) {
+            foreach (glob(base_path('app//Plugins//Telegram//Commands') . '/*.php') as $file) {
+                $commandFile = basename($file, '.php');
+                $class = '\\App\\Plugins\\Telegram\\Commands\\' . $commandFile;
+                if (!class_exists($class)) continue;
+                $instance = new $class();
+                if (!isset($instance->command)) continue;
+                if ($command !== $instance->command) continue;
+                $isCommand = true;
+                break;
+            }
+        }
+
+        return $isCommand;
     }
 }
