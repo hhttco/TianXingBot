@@ -85,8 +85,11 @@ class Common {
     public function help($chatId) {
         $help = [
             '/help - 获取帮助信息',
+            '/config - 获取设置信息',
             '/getme - 获取自己的信息',
-            '/welcome - 设置欢迎词 (欢迎 {$username} 加入本群||按钮1&&地址||按钮2&&地址)',
+            '/welcome - 设置欢迎词 (/welcome 欢迎 {$username} 加入本群||按钮1&&地址||按钮2&&地址)',
+            '/add - 添加关键词 (/add 优惠码===abc111)',
+            '/adddel - 删除关键词 (/adddel 优惠码)'
         ];
 
         $text = implode(PHP_EOL, $help);
