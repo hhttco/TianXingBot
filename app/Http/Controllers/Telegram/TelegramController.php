@@ -173,6 +173,8 @@ class TelegramController extends Controller
 
     public function keywordCheck(array $data)
     {
+        if (!isset($data['message']['text'])) return;
+
         if (!$this->checkIsCommand($data['message']['text'])) {
             $class = '\\App\\Plugins\\Telegram\\KeywordCheck';
             if (!class_exists($class)) return;
