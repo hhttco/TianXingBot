@@ -12,6 +12,7 @@ class ConfigController extends Controller
     public function setWebhook()
     {
         $hookUrl = url('/telegram/webhook?access_token=' . md5(config('telegram.bot.token')));
+        Log::info($hookUrl);
         $telegramService = new TelegramService();
         $telegramService->setWebhook($hookUrl);
 
