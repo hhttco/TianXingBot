@@ -57,14 +57,10 @@ class Common {
             $responseMessageId = $response->result->message_id;
 
             // 放入延迟消息队列中
-            // TelegramDeleteMessage::dispatch([
-            //     'id'  => '123666666',
-            //     'id2' => 'rfd9999'
-            // ])->delay(now()->addMinutes(1));
             TelegramDeleteMessage::dispatch([
                 'chat_id'    => $chatId,
                 'message_id' => $response->result->message_id
-            ]);
+            ])->delay(now()->addMinutes(1));
         }
     }
 
