@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Telegram;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\TelegramService;
-use Illuminate\Support\Facades\Log;
+// use Illuminate\Support\Facades\Log;
 
 class TelegramController extends Controller
 {
@@ -16,7 +16,6 @@ class TelegramController extends Controller
     public function __construct(Request $request)
     {
         if ($request->input('access_token') !== md5(config('telegram.bot.token'))) {
-            Log::info("111");
             abort(401);
         }
 
@@ -35,7 +34,7 @@ class TelegramController extends Controller
 
     private function formatMessage(array $data)
     {
-        Log::info(json_encode($data));
+        // Log::info(json_encode($data));
 
         // if (!isset($data['message'])) return;
         if (!isset($data['message']['text']) && !isset($data['callback_query'])) return;
