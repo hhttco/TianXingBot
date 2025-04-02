@@ -66,8 +66,6 @@ mv composer.phar /usr/bin/composer
 cd /var/www
 git clone https://github.com/hhttco/TianXingBot.git
 cd TianXingBot
-chown -R www-data:www-data /var/www/TianXingBot
-chmod -R 755 /var/www/TianXingBot
 composer install
 cp .env.example .env
 php artisan key:generate
@@ -76,14 +74,17 @@ php artisan key:generate
 ## 7.修改BOT配置文件
 1) 修改基础配置  
 2) 修改数据库连接  
-3) 修改BOT配置  
-4) 初始化数据库  
+3) 修改BOT配置
+4) 修改权限
+5) 初始化数据库  
 ```
 vim .env
 cat /var/www/TianXingBot/config/telegram.php
 rm /var/www/TianXingBot/config/telegram.php
 vim /var/www/TianXingBot/config/telegram.php
 
+chown -R www-data:www-data /var/www/TianXingBot
+chmod -R 755 /var/www/TianXingBot
 php artisan migrate
 ```
 
