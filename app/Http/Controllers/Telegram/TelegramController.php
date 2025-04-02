@@ -35,7 +35,6 @@ class TelegramController extends Controller
     private function formatMessage(array $data)
     {
         Log::info(json_encode($data));
-        // 
 
         // if (!isset($data['message'])) return;
         if (!isset($data['message']['text']) && !isset($data['callback_query'])) return;
