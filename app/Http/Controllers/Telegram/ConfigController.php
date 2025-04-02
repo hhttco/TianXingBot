@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Telegram;
 
 use App\Http\Controllers\Controller;
 use App\Services\TelegramService;
-use Illuminate\Support\Facades\Log;
 
 class ConfigController extends Controller
 {
@@ -12,7 +11,6 @@ class ConfigController extends Controller
     public function setWebhook()
     {
         $hookUrl = url('/telegram/webhook?access_token=' . md5(config('telegram.bot.token')));
-        Log::info($hookUrl);
         $telegramService = new TelegramService();
         $telegramService->setWebhook($hookUrl);
 
