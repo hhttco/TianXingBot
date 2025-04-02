@@ -8,7 +8,7 @@
 
 ## 1.安装PHP环境
 ```
-apt -y update && apt -y install curl wget git unzip nginx mariadb-server redis-server vim
+apt -y update && apt -y install curl wget git unzip nginx mariadb-server redis-server supervisor vim
 ```
 
 ```
@@ -110,9 +110,31 @@ server {
 }
 ```
 
-## 9.安装证书
+## 9.配置消息队列
+```
+vim /etc/supervisor/conf.d/quess.conf
+```
+```
+[program:quess]
+process_name=%(program_name)s_%(process_num)02d
+command=php /var/www/TianXingBot/artisan queue:work --queue=telegram_delete_message
+numprocs=1
+user=www-data
+autostart=true
+autorestart=true
+redirect_stderr=true
+stdout_logfile=/var/www/TianXingBot/storage/logs/queue.log
+```
 
-## 10.启动BOT
+```
+supervisorctl update
+supervisorctl status
+```
+
+
+## 10.安装证书
+
+## 11.启动BOT
 ```
 curl -X POST https://域名/telegram/set/webhook
 ```
