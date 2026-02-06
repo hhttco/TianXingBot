@@ -19,6 +19,7 @@ class CreateTgGroupConfigTable extends Migration
             $table->longText('group_welcome')->nullable(); // 群欢迎
             $table->tinyInteger('group_welcome_state')->default(0); // 默认 0 关闭 1 启用
             $table->tinyInteger('group_join_check')->default(0); // 入群验证 默认 0 关闭 1 启用
+            $table->tinyInteger('group_can_forward')->default(0); // 是否可以被转发消息 默认 0 可以 1 禁止并删除消息
             $table->timestamps();
         });
     }
