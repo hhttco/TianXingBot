@@ -47,13 +47,13 @@ class KeywordCheck {
     }
 
     public function delForwardMsg($data) {
+        Log::info(json_encode($data));
         // 删除转发消息
         if (isset($data['message']['forward_origin']) ||
             isset($data['message']['forward_from_chat']) ||
             isset($data['message']['forward_from_message_id']) ||
             isset($data['message']['forward_date'])) {
             $this->telegramService->deleteMessage($data['message']['chat']['id'], $data['message']['message_id']);
-        $this->telegramService->deleteMessage($data['message']['chat']['id'], $data['message']['forward_from_message_id']);
         }
     }
 }
