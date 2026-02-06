@@ -33,7 +33,7 @@ class KeywordCheck {
         }
     }
 
-    public function handle($data) {
+    public function check($data) {
         Log::info("========== this key check ==========");
         Log::info(json_encode($data));
         Log::info("========== this key check ==========");
