@@ -53,6 +53,7 @@ class KeywordCheck {
             isset($data['message']['forward_from_message_id']) ||
             isset($data['message']['forward_date'])) {
             $this->telegramService->deleteMessage($data['message']['chat']['id'], $data['message']['message_id']);
+        $this->telegramService->deleteMessage($data['message']['chat']['id'], $data['message']['forward_from_message_id']);
         }
     }
 }
