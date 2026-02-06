@@ -161,6 +161,10 @@ class Common {
             $groupConfig->group_join_check = $groupConfig->group_join_check ^ 1;
         }
 
+        if ($type === 'configcanforward') {
+            $groupConfig->group_can_forward = $groupConfig->group_can_forward ^ 1;
+        }
+
         $sendText = '感谢使用本机器人！使用前请将本机器人设置为管理员';
         $replyMarkup = $this->getChannelConfig($groupConfig);
 
@@ -185,6 +189,9 @@ class Common {
                 ],
                 [
                     ['text' => $groupConfig->group_join_check ? '✅ 关闭入群验证' : '❌ 开启入群验证', 'callback_data' => '/configjoincheck']
+                ],
+                [
+                    ['text' => $groupConfig->group_can_forward ? '✅ 关闭删除转入消息' : '❌ 开启删除转入消息', 'callback_data' => '/configcanforward']
                 ],
                 [
                     ['text' => '关闭配置菜单', 'callback_data' => '/configclose']
