@@ -20,6 +20,9 @@ class KeywordCheck {
         $messageId = $data['message']['message_id'];
         $messageText = $data['message']['text'];
 
+        // 检查消息中文本
+        $this->check($data);
+
         // 获取群聊的所有关键词
         $keywords = TgGroupKeyword::where('group_id', $chatId)->where('group_keyword_state', 1)->get();
         foreach ($keywords as $k => $v) {
@@ -28,5 +31,11 @@ class KeywordCheck {
                 break;
             }
         }
+    }
+
+    public function handle($data) {
+        Log::info("========== this key check ==========");
+        Log::info(json_encode($data));
+        Log::info("========== this key check ==========");
     }
 }
