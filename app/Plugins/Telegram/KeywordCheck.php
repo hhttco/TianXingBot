@@ -4,6 +4,7 @@ namespace App\Plugins\Telegram;
 
 use App\Services\TelegramService;
 use App\Models\TgGroupKeyword;
+use App\Models\TgGroupConfig;
 use Illuminate\Support\Facades\Log;
 
 class KeywordCheck {
@@ -34,8 +35,24 @@ class KeywordCheck {
     }
 
     public function check($data) {
-        Log::info("========== this key check ==========");
-        Log::info(json_encode($data));
-        Log::info("========== this key check ==========");
+        // 判断是否有配置
+        $groupConfig = TgGroupConfig::where('group_id', $data['message']['chat']['id'])->first();
+        if (!$groupConfig) {
+            abort(500, '请重新邀请机器人入群');
+        }
+
+        if ($groupConfig->group_can_forward == 1) {
+            $this->delForwardMsg($data);
+        }
+    }
+
+    public function delForwardMsg($data) {
+        // 删除转发消息
+        if (isset($data['message']['forward_origin']) ||
+            isset($data['message']['forward_from_chat']) ||
+            isset($data['message']['forward_from_message_id']) ||
+            isset($data['message']['forward_date'])) {
+            $this->telegramService->deleteMessage($data['message']['chat']['id'], $data['message']['message_id']);
+        }
     }
 }
