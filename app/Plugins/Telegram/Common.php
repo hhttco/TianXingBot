@@ -99,10 +99,20 @@ class Common {
 
         $firstNum  = rand(1, 9);
         $secondNum = rand(1, 9);
-        $ques = $userName . ' 你好呀！请回答一个问题，' . $firstNum . ' + ' . $secondNum . ' 等于多少？请在90秒内回答，否则会被我踢出群。';
+        $ques = $userName . ' 你好呀！请回答一个问题，' . $firstNum . ' + ' . $secondNum . ' 等于多少？请在30秒内回答，否则会被我永久禁言。';
         $replyMarkup = $this->getCheckJoinStr($chatId, $userId, $firstNum, $secondNum);
 
-        $this->telegramService->sendMessageMarkup($chatId, $ques, $replyMarkup, 'markdown');
+        $response = $this->telegramService->sendMessageMarkup($chatId, $ques, $replyMarkup, 'markdown');
+
+        if ($response->result->message_id) {
+            $responseMessageId = $response->result->message_id;
+
+            // 放入延迟消息队列中
+            TelegramDeleteMessage::dispatch([
+                'chat_id'    => $chatId,
+                'message_id' => $response->result->message_id
+            ])->delay(now()->addSeconds(30));
+        }
     }
 
     // 获取入群验证发送键盘的字符串
