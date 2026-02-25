@@ -54,5 +54,13 @@ class KeywordCheck {
             isset($data['message']['forward_date'])) {
             $this->telegramService->deleteMessage($data['message']['chat']['id'], $data['message']['message_id']);
         }
+
+        // 判断是否有转发链接
+        $messageText = $data['message']['text'];
+        // 仅匹配 Telegram 内部链接
+        $tgLinkPattern = '/(t\.me|telegram\.me|tg\.me)\/[^\s]+/i';
+        if (preg_match($tgLinkPattern, $messageText)) {
+            $this->telegramService->deleteMessage($data['message']['chat']['id'], $data['message']['message_id']);
+        }
     }
 }
