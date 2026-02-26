@@ -67,7 +67,6 @@ class KeywordCheck {
 
         // 判断是否是预览消息
         if (isset($data['message']['link_preview_options']) && isset($data['message']['link_preview_options']['url'])) {
-            $tgLinkPattern = '/(t\.me|telegram\.me|tg\.me)\/[^\s]+/i';
             if (preg_match($tgLinkPattern, $data['message']['link_preview_options']['url'])) {
                 $this->telegramService->deleteMessage($data['message']['chat']['id'], $data['message']['message_id']);
             }
