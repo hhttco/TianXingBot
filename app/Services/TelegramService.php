@@ -150,7 +150,11 @@ class TelegramService {
                 $this->sendMessage($params['chat_id'], '天星机器人权限不足！请将机器人设置为群管理员', 'markdown');
             }
 
-            abort(500, '来自TG的错误：' . $response->description);
+            if (isset($params['chat_id'])) {
+                $this->sendMessage($params['chat_id'], '来自TG的错误：' . $response->description, 'markdown');
+            }
+
+            // abort(500, '来自TG的错误：' . $response->description);
         }
 
         return $response;
