@@ -47,6 +47,8 @@ class KeywordCheck {
     }
 
     public function delForwardMsg($data) {
+        // Log::info(json_encode($data));
+
         // 删除转发消息
         if (isset($data['message']['forward_origin']) ||
             isset($data['message']['forward_from_chat']) ||
@@ -55,12 +57,20 @@ class KeywordCheck {
             $this->telegramService->deleteMessage($data['message']['chat']['id'], $data['message']['message_id']);
         }
 
-        // 判断是否有转发链接
+        // 判断是否是分享链接
         $messageText = $data['message']['text'];
         // 仅匹配 Telegram 内部链接
         $tgLinkPattern = '/(t\.me|telegram\.me|tg\.me)\/[^\s]+/i';
         if (preg_match($tgLinkPattern, $messageText)) {
             $this->telegramService->deleteMessage($data['message']['chat']['id'], $data['message']['message_id']);
+        }
+
+        // 判断是否是预览消息
+        if (isset($data['message']['link_preview_options']) && isset($data['message']['link_preview_options']['url'])) {
+            $tgLinkPattern = '/(t\.me|telegram\.me|tg\.me)\/[^\s]+/i';
+            if (preg_match($tgLinkPattern, $data['message']['link_preview_options']['url'])) {
+                $this->telegramService->deleteMessage($data['message']['chat']['id'], $data['message']['message_id']);
+            }
         }
     }
 }
