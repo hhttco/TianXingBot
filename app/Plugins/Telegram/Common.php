@@ -175,6 +175,10 @@ class Common {
             $groupConfig->group_can_forward = $groupConfig->group_can_forward ^ 1;
         }
 
+        if ($type === 'configdelslbegin') {
+            $groupConfig->group_del_sl_begin = $groupConfig->group_del_sl_begin ^ 1;
+        }
+
         $sendText = '感谢使用本机器人！使用前请将本机器人设置为管理员';
         $replyMarkup = $this->getChannelConfig($groupConfig);
 
@@ -202,6 +206,9 @@ class Common {
                 ],
                 [
                     ['text' => $groupConfig->group_can_forward ? '✅ 关闭删除转入消息' : '❌ 开启删除转入消息', 'callback_data' => '/configcanforward']
+                ],
+                [
+                    ['text' => $groupConfig->group_del_sl_begin ? '✅ 关闭删除/开头消息' : '❌ 开启删除/开头消息', 'callback_data' => '/configdelslbegin']
                 ],
                 [
                     ['text' => '关闭配置菜单', 'callback_data' => '/configclose']
