@@ -99,10 +99,10 @@ class Common {
 
         $firstNum  = rand(1, 9);
         $secondNum = rand(1, 9);
-        $ques = $userName . ' 你好呀！请回答一个问题，' . $firstNum . ' + ' . $secondNum . ' 等于多少？请在30秒内回答，否则会被我永久禁言。';
+        $ques = htmlspecialchars($userName) . ' 你好呀！请回答一个问题，' . $firstNum . ' + ' . $secondNum . ' 等于多少？请在30秒内回答，否则会被我永久禁言。';
         $replyMarkup = $this->getCheckJoinStr($chatId, $userId, $firstNum, $secondNum);
 
-        $response = $this->telegramService->sendMessageMarkup($chatId, $ques, $replyMarkup, 'markdown');
+        $response = $this->telegramService->sendMessageMarkup($chatId, $ques, $replyMarkup, 'html');
 
         if ($response->result->message_id) {
             $responseMessageId = $response->result->message_id;
