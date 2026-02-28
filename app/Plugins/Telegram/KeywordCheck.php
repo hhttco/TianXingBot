@@ -44,6 +44,10 @@ class KeywordCheck {
         if ($groupConfig->group_can_forward == 1) {
             $this->delForwardMsg($data);
         }
+
+        if ($groupConfig->group_del_sl_begin == 1) {
+            $this->delSlMsg($data);
+        }
     }
 
     public function delForwardMsg($data) {
@@ -70,6 +74,18 @@ class KeywordCheck {
             if (preg_match($tgLinkPattern, $data['message']['link_preview_options']['url'])) {
                 $this->telegramService->deleteMessage($data['message']['chat']['id'], $data['message']['message_id']);
             }
+        }
+    }
+
+    public function delSlMsg($data) {
+        // 判断是不是管理员
+        $common = new Common();
+        if ($common->power($data['message']['chat']['id'], $data['message']['from']['id'])) {
+            return;
+        }
+
+        if (strpos($data['message']['text'], '/') === 0) {
+            $this->telegramService->deleteMessage($data['message']['chat']['id'], $data['message']['message_id']);
         }
     }
 }
