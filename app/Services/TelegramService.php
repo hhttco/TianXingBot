@@ -150,6 +150,11 @@ class TelegramService {
                 $this->sendMessage($params['chat_id'], '天星机器人权限不足！请将机器人设置为群管理员', 'markdown');
             }
 
+            // 判断消息是否存在
+            if (isset($params['chat_id']) && strpos($response->description, 'message to delete not found') !== false) {
+                return $response;
+            }
+
             if (isset($params['chat_id'])) {
                 $this->sendMessage($params['chat_id'], '来自TG的错误：' . $response->description, 'markdown');
             }
